@@ -24,8 +24,6 @@ class Counterpact_Server():
         map_name: The display name of the server's map.
     """
 
-    _update_timeout = 30 # seconds
-
     def __init__(self, json: dict):
         self.name = json['serverName']
         self.players = json['serverPlayers']
@@ -48,6 +46,7 @@ class Counterpact_Lobby():
     Arguments:
         ip (str) - The IP address of the lobby server.
         port (int) - The port of the lobby server.
+        update_timeout (int) - The time (in seconds) between when the lobby can be refreshed.
 
     Attributes:
         total_players: 
@@ -68,11 +67,12 @@ class Counterpact_Lobby():
         self.last_check = datetime.now()
         return True
 
-    def __init__(self, ip: str, port: int):
+    def __init__(self, ip: str, port: int, update_timeout: int = 30):
         self._tcp_ip = ip
         self._tcp_port = port
+        self._update_timeout = update_timeout
 
-        self.last_check = datetime.now() - timedelta(seconds=self._update_timeou)
+        self.last_check = datetime.now() - timedelta(seconds=update_timeout+1)
         self.refresh()
 
     def _read_lobby(self):
