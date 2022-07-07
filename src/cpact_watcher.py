@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
-from json import loads
-import socket
+from requests import get
 
 class Counterpact_Server():
     """Counterpact server object.
@@ -68,22 +67,17 @@ class Counterpact_Lobby():
         return True
 
     def __init__(self, ip: str, port: int, update_timeout: int = 30):
-        self._tcp_ip = ip
-        self._tcp_port = port
+        self.ip = ip
+        self.port = port
         self._update_timeout = update_timeout
 
         self.last_check = datetime.now() - timedelta(seconds=update_timeout+1)
         self.refresh()
 
     def _read_lobby(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((self._tcp_ip, self._tcp_port))
-        s.sendall(b"GET / HTTP/0.9\r\nLobby: True\r\n\r\n")
-        data = s.recv(2048)
-        s.close()
-        json = loads(data.decode())
+        resp = get(f'http://{self.ip}:{self.port}/', headers={"Lobby":"True"})
         self.servers = []
-        for server_json in json:
+        for server_json in resp.json():
             self.servers.append(Counterpact_Server(server_json))
     
     def _misc_data(self):
