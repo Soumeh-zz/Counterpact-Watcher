@@ -66,16 +66,15 @@ class Counterpact_Lobby():
         self.last_check = datetime.now()
         return True
 
-    def __init__(self, ip: str, port: int, update_timeout: int = 30):
-        self.ip = ip
-        self.port = port
+    def __init__(self, url: str, update_timeout: int = 30):
+        self.url = url
         self._update_timeout = update_timeout
 
         self.last_check = datetime.now() - timedelta(seconds=update_timeout+1)
         self.refresh()
 
     def _read_lobby(self):
-        resp = get(f'http://{self.ip}:{self.port}/', headers={"Lobby":"True"})
+        resp = get(self.url, headers={"Lobby":"True"})
         self.servers = []
         for server_json in resp.json():
             self.servers.append(Counterpact_Server(server_json))
