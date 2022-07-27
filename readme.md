@@ -14,8 +14,7 @@ from time import sleep
 from cpact_watcher import Counterpact_Lobby
 
 lobby = Counterpact_Lobby(
-    ip = '0.0.0.0', # The IP address of the lobby server (Not the actual IP address, contact the game developer to get it)
-    port = 25565, # The Port address of the lobby server
+    url = 'http://127.0.0.1:8000', # The URL address of the lobby server (Contact The Developer to get it)
     timeout = 30 # The time (in seconds) between when the lobby can be refreshed
 )
 print(lobby.servers) # Returns a list of servers
